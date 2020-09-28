@@ -11,27 +11,43 @@ import static ru.netology.web.DataGenerator.*;
 
 public class DeliveryCardTest {
     private final String city = getRandomCity();
+    private final String notCorrectCity = getNotCorrectCity();
     private final String dateOfDelivery = getCorrectDate(3);
     private final String dateOfDeliveryAnother = getCorrectDate(7);
     private final String notCorrectDate = getNotCorrectDate();
     private final String name = getRandomName();
+    private final String notCorrectName = getNotCorrectName();
     private final String phone = getRandomPhone();
+    private final String notCorrectPhone = getNotCorrectPhone();
 
     @BeforeEach
     void setUpAll() {
         open("http://localhost:9999");
-        $("[data-test-id='city'] input").setValue(city);
         $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
     }
 
     @Test
     void shouldCorrectForm() {
+        $("[data-test-id='city'] input").setValue(city);
         $("[data-test-id='date'] input").setValue(dateOfDelivery);
         $("[data-test-id='name'] input").setValue(name);
         $("[data-test-id='phone'] input").setValue(phone);
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Запланировать")).click();
-        $(byText("Успешно!")).waitUntil(visible, 11000); // ???
+        $(byText("Успешно!")).waitUntil(visible, 5000);
+        $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+dateOfDelivery));
+        $("[data-test-id=success-notification] button").click();
+    }
+
+    @Test
+    void shouldCorrectFormAnotherDateAndTheSameData() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $(byText("Успешно!")).waitUntil(visible, 5000);
         $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+dateOfDelivery));
         $("[data-test-id=success-notification] button").click();
 
@@ -43,4 +59,96 @@ public class DeliveryCardTest {
 
         $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+dateOfDeliveryAnother));
     }
+
+    @Test
+    void shouldNotCorrectCity() {
+        $("[data-test-id='city'] input").setValue(notCorrectCity);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=city].input_invalid .input__sub").shouldHave(exactText("Доставка в выбранный город недоступна"));
+    }
+
+    @Test
+    void shouldNotCorrectDate() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(notCorrectDate);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=date] .input_invalid .input__sub").shouldHave(exactText("Заказ на выбранную дату невозможен"));
+    }
+
+    @Test
+    void shouldNotCorrectName() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(notCorrectName);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void shouldCorrectFormNotAgreement() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=agreement].input_invalid .checkbox__text").shouldHave(exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных"));
+    }
+
+    @Test
+    void shouldTestEmptyForm() {
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=city].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldTestEmptyCity() {
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=city].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldTestEmptyDate() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=date] .input_invalid .input__sub").shouldHave(exactText("Неверно введена дата"));
+    }
+
+    @Test
+    void shouldTestEmptyName() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void shouldTestEmptyPhone() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
 }

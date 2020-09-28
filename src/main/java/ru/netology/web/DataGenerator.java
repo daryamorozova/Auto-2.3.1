@@ -13,10 +13,16 @@ import java.util.Locale;
 public class DataGenerator {
 
     public static Faker faker = new Faker(new Locale("ru"));
+    public static Faker fakereng = new Faker(new Locale("eng"));
 
     public static String getRandomCity() {
         String city = faker.address().cityName();
         return city;
+    }
+
+    public static String getNotCorrectCity() {
+        String notCorrectCity = fakereng.address().cityName();
+        return notCorrectCity;
     }
 
     public static String getCorrectDate(int days) {
@@ -34,9 +40,19 @@ public class DataGenerator {
         return name;
     }
 
+    public static String getNotCorrectName() {
+        String notCorrectName = fakereng.name().fullName();
+        return notCorrectName;
+    }
+
     public static String getRandomPhone() {
         String phone = faker.phoneNumber().phoneNumber();
         return phone;
+    }
+
+    public static String getNotCorrectPhone() {
+        String notCorrectPhone = fakereng.phoneNumber().subscriberNumber();
+        return notCorrectPhone;
     }
 
 }
