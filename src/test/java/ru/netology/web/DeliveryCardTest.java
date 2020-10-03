@@ -127,7 +127,7 @@ public class DeliveryCardTest {
 
     @Test
     void shouldTestEmptyForm() {
-        $("[data-test-id='agreement']").click();
+        $("[data-test-id='agreement'] .checkbox__box").click();
         $$("button").find(exactText("Запланировать")).click();
         $("[data-test-id=city].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
