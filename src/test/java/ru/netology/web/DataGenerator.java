@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +19,10 @@ public class DataGenerator {
     public static Faker fakereng = new Faker(new Locale("eng"));
 
     public static String getRandomCity() {
-        String city = faker.address().cityName();
-        return city;
+        List<String> list = Arrays.asList("Нижний Новгород", "Москва", "Санкт-Петербург", "Казань", "Йошкар-Ола", "Новосибирск", " Хабаровск");
+        Random random = new Random();
+        String randomCity = list.get(random.nextInt(list.size()));
+        return randomCity;
     }
 
     public static String getNotCorrectCity() {
@@ -36,7 +41,7 @@ public class DataGenerator {
     }
 
     public static String getRandomName() {
-        String name = faker.name().fullName();
+        String name = faker.name().firstName() + " " + faker.name().lastName();
         return name;
     }
 

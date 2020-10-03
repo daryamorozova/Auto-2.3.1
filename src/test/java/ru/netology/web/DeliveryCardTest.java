@@ -1,4 +1,4 @@
-package ru.netology;
+package ru.netology.web;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,18 +7,16 @@ import org.openqa.selenium.Keys;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
-import static ru.netology.web.DataGenerator.*;
 
 public class DeliveryCardTest {
-    private final String city = getRandomCity();
-    private final String notCorrectCity = getNotCorrectCity();
-    private final String dateOfDelivery = getCorrectDate(3);
-    private final String dateOfDeliveryAnother = getCorrectDate(7);
-    private final String notCorrectDate = getNotCorrectDate();
-    private final String name = getRandomName();
-    private final String notCorrectName = getNotCorrectName();
-    private final String phone = getRandomPhone();
-    private final String notCorrectPhone = getNotCorrectPhone();
+    private final String city = DataGenerator.getRandomCity();
+    private final String notCorrectCity = DataGenerator.getNotCorrectCity();
+    private final String dateOfDelivery = DataGenerator.getCorrectDate(3);
+    private final String dateOfDeliveryAnother = DataGenerator.getCorrectDate(7);
+    private final String notCorrectDate = DataGenerator.getNotCorrectDate();
+    private final String name = DataGenerator.getRandomName();
+    private final String notCorrectName = DataGenerator.getNotCorrectName();
+    private final String phone = DataGenerator.getRandomPhone();
 
     @BeforeEach
     void setUpAll() {
@@ -83,7 +81,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldNotCorrectName() {
+    void shouldNotCorrectName1() {
         $("[data-test-id='city'] input").setValue(city);
         $("[data-test-id='date'] input").setValue(dateOfDelivery);
         $("[data-test-id='name'] input").setValue(notCorrectName);
@@ -91,6 +89,30 @@ public class DeliveryCardTest {
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Запланировать")).click();
         $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void shouldNotCorrectName2() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue("Мараева Алёна");
+        $("[data-test-id='phone'] input").setValue(phone);
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void shouldNotCorrectPhone() {
+        $("[data-test-id='city'] input").setValue(city);
+        $("[data-test-id='date'] input").setValue(dateOfDelivery);
+        $("[data-test-id='name'] input").setValue(name);
+        $("[data-test-id='phone'] input").setValue("0");
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $(byText("Успешно!")).waitUntil(visible, 5000);
+        $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+dateOfDelivery));
+        $("[data-test-id=success-notification] button").click();
     }
 
     @Test
