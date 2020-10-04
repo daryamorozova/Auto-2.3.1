@@ -19,7 +19,7 @@ public class DataGenerator {
     public static Faker fakereng = new Faker(new Locale("eng"));
 
     public static String getRandomCity() {
-        List<String> list = Arrays.asList("Нижний Новгород", "Москва", "Санкт-Петербург", "Казань", "Йошкар-Ола", "Новосибирск", " Хабаровск");
+        List<String> list = Arrays.asList("Нижний Новгород", "Москва", "Санкт-Петербург", "Казань", "Йошкар-Ола", "Новосибирск", "Хабаровск");
         Random random = new Random();
         String randomCity = list.get(random.nextInt(list.size()));
         return randomCity;
@@ -41,7 +41,7 @@ public class DataGenerator {
     }
 
     public static String getRandomName() {
-        String name = faker.name().firstName() + " " + faker.name().lastName();
+        String name = faker.name().lastName() + " " + faker.name().firstName();
         return name;
     }
 
@@ -50,14 +50,14 @@ public class DataGenerator {
         return notCorrectName;
     }
 
+    public static String getNotCorrectNameWithYo() {
+        String notCorrectName = "Мараева Алёна";
+        return notCorrectName;
+    }
+
     public static String getRandomPhone() {
         String phone = faker.phoneNumber().phoneNumber();
         return phone;
-    }
-
-    public static String getNotCorrectPhone() {
-        String notCorrectPhone = fakereng.phoneNumber().subscriberNumber();
-        return notCorrectPhone;
     }
 
 }
