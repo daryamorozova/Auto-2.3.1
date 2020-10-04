@@ -41,7 +41,6 @@ public class DeliveryCardTest {
         $("[data-test-id='phone'] input").setValue(phone);
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Запланировать")).click();
-        $(byText("Успешно!")).waitUntil(visible, 5000);
         $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+DataGenerator.getCorrectDate(3)));
         $("[data-test-id=success-notification] button").click();
 
