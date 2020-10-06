@@ -60,4 +60,9 @@ public class DataGenerator {
         return phone;
     }
 
+    public static String getNotCorrectPhone() {
+        String phone ="000";
+        return phone;
+    }
+
 }

@@ -17,7 +17,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldCorrectForm() {
+    void shouldSendFormWithCorrectData() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
@@ -30,7 +30,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldCorrectFormAnotherDateAndTheSameData() {
+    void shouldSendFormWithAnotherDateAndTheSameData() {
         final String city = DataGenerator.getRandomCity();
         final String name = DataGenerator.getRandomName();
         final String phone = DataGenerator.getRandomPhone();
@@ -54,7 +54,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldNotCorrectCity() {
+    void shouldNotSendFormIfNotCorrectCity() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getNotCorrectCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
@@ -65,7 +65,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldNotCorrectDate() {
+    void shouldNotSendFormIfNotCorrectDate() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getNotCorrectDate());
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
@@ -76,7 +76,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldNotCorrectName1() {
+    void shouldNotSendFormIfNameInEnglish() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getNotCorrectName());
@@ -87,18 +87,31 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldNotCorrectName2() {
+    void shouldSendFormIfNameWithYo() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getNotCorrectNameWithYo());
         $("[data-test-id='phone'] input").setValue(DataGenerator.getRandomPhone());
         $("[data-test-id='agreement']").click();
         $$("button").find(exactText("Запланировать")).click();
-        $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        $(byText("Успешно!")).waitUntil(visible, 5000);
+        $("[data-test-id=success-notification] .notification__content").shouldHave(text("Встреча успешно запланирована на "+DataGenerator.getCorrectDate(3)));
+        $("[data-test-id=success-notification] button").click();
     }
 
     @Test
-    void shouldCorrectFormNotAgreement() {
+    void shouldNotSendFormIfNotCorrectPhone() {
+        $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
+        $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
+        $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
+        $("[data-test-id='phone'] input").setValue(DataGenerator.getNotCorrectPhone());
+        $("[data-test-id='agreement']").click();
+        $$("button").find(exactText("Запланировать")).click();
+        $("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+    }
+
+    @Test
+    void shouldNotSendFormIfNotAgreement() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
@@ -108,7 +121,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldTestEmptyForm() {
+    void shouldNotSendEmptyForm() {
         $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.ESCAPE);
         $("[data-test-id='agreement'] .checkbox__box").click();
         $$("button").find(exactText("Запланировать")).click();
@@ -116,7 +129,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldTestEmptyCity() {
+    void shouldNotSendFormIfEmptyCity() {
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
         $("[data-test-id='phone'] input").setValue(DataGenerator.getRandomPhone());
@@ -126,7 +139,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldTestEmptyDate() {
+    void shouldNotSendFormIfEmptyDate() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").doubleClick().sendKeys(Keys.BACK_SPACE);
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
@@ -137,7 +150,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldTestEmptyName() {
+    void shouldNotSendFormIfEmptyName() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='phone'] input").setValue(DataGenerator.getRandomPhone());
@@ -147,7 +160,7 @@ public class DeliveryCardTest {
     }
 
     @Test
-    void shouldTestEmptyPhone() {
+    void shouldNotSendFormIfEmptyPhone() {
         $("[data-test-id='city'] input").setValue(DataGenerator.getRandomCity());
         $("[data-test-id='date'] input").setValue(DataGenerator.getCorrectDate(3));
         $("[data-test-id='name'] input").setValue(DataGenerator.getRandomName());
